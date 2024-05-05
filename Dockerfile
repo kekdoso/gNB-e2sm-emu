@@ -4,19 +4,14 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential protobuf-c-compiler libprotobuf-c-dev git cmake && \
     rm -rf /var/lib/apt/lists/*
 
-# clone repo
-RUN git clone https://github.com/ANTLab-polimi/gNB-e2sm-emu.git /gNB-e2sm-emu
+# clone and build e2ap agent
+WORKDIR /
+RUN git clone -b oai-support https://github.com/EugenioMoro/ocp-e2sim.git
+WORKDIR /ocp-e2sim
+RUN chmod +x build_e2sim.sh && ./build_e2sim.sh -i
+
+# prepare volume and workdir
+VOLUME ["/gNB-e2sm-emu"]
 WORKDIR /gNB-e2sm-emu
 
-# checkout mrn-base
-RUN git checkout mrn-base
-
-# synch submodules
-RUN chmod +x submodule-sync.sh
-RUN ./submodule-sync.sh
-
-# build the emulator
-RUN chmod +x build.sh
-RUN ./build.sh
-
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
