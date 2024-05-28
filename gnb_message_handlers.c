@@ -280,6 +280,12 @@ UeListM* build_ue_list_message(){
         ue_info_list[i]->meas_type_2 = rand();
         ue_info_list[i]->has_meas_type_3 = 1;
         ue_info_list[i]->meas_type_3 = rand();
+        ue_info_list[i]->has_meas_type_4 = 1;
+        ue_info_list[i]->meas_type_4 = rand();
+        ue_info_list[i]->has_meas_type_5 = 1;
+        ue_info_list[i]->meas_type_5 = rand();
+        ue_info_list[i]->has_meas_type_6 = 1;
+        ue_info_list[i]->meas_type_6 = rand();
 
         // properties
         ue_info_list[i]->has_prop_1 = 1;
