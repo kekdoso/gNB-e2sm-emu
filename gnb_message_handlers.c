@@ -288,8 +288,8 @@ UeListM* build_ue_list_message(){
         ue_info_list[i]->meas_type_6 = rand();
 
         // properties
-        ue_info_list[i]->has_prop_1 = 1;
-        ue_info_list[i]->prop_1 = connected_ue_list[i].prop_1;
+        ue_info_list[i]->has_prop_1 = 0;
+        //ue_info_list[i]->prop_1 = connected_ue_list[i].prop_1;
         if(connected_ue_list[i].prop_2 > -1){
             ue_info_list[i]->has_prop_2 = 1;
             ue_info_list[i]->prop_2 = connected_ue_list[i].prop_2;
