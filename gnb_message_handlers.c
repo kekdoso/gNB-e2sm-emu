@@ -7,6 +7,7 @@
 #define CONNECTED_UES 4
 
 int gnb_id = 0;
+int gnb_prb = 0;
 bool is_initialized = false;
 typedef struct {
     int rnti;
@@ -151,6 +152,8 @@ const char* get_enum_name(RANParameter ran_par_enum){
             return "gnb_id";
         case RAN_PARAMETER__UE_LIST:
             return "ue_list";
+        case RAN_PARAMETER__GNB_PRB:
+            return "gnb_prb";
         default:
             return "unrecognized param";
     }
@@ -164,6 +167,9 @@ void ran_write(RANParamMapEntry* target_param_map_entry){
             break;
         case RAN_PARAMETER__UE_LIST: // if we receive a ue list message we need to apply its content
             apply_properties_to_ue_list(target_param_map_entry->ue_list);
+            break;
+        case RAN_PARAMETER__GNB_PRB:
+            gnb_prb = target_param_map_entry->int64_value;   
             break;
         default:
             printf("ERROR: cannot write RAN, unrecognized target param %d\n", target_param_map_entry->key);
@@ -274,18 +280,16 @@ UeListM* build_ue_list_message(){
         // read mesures and add to message (actually just send random data)
 
         // measures
-        ue_info_list[i]->has_meas_type_1 = 1;
-        ue_info_list[i]->meas_type_1 = rand();
-        ue_info_list[i]->has_meas_type_2 = 1;
-        ue_info_list[i]->meas_type_2 = rand();
-        ue_info_list[i]->has_meas_type_3 = 1;
-        ue_info_list[i]->meas_type_3 = rand();
-        ue_info_list[i]->has_meas_type_4 = 1;
-        ue_info_list[i]->meas_type_4 = rand();
-        ue_info_list[i]->has_meas_type_5 = 1;
-        ue_info_list[i]->meas_type_5 = rand();
-        ue_info_list[i]->has_meas_type_6 = 1;
-        ue_info_list[i]->meas_type_6 = rand();
+        ue_info_list[i]->has_meas_rsrp = 1;
+        ue_info_list[i]->meas_rsrp = -(rand()%100);
+        ue_info_list[i]->has_meas_ber_up = 1;
+        ue_info_list[i]->meas_ber_up = (float)(1/(float)rand());
+        ue_info_list[i]->has_meas_ber_down = 1;
+        ue_info_list[i]->meas_ber_down = (float)(1/(float)rand());
+        ue_info_list[i]->has_meas_mcs_up = 1;
+        ue_info_list[i]->meas_mcs_up = rand()%32;
+        ue_info_list[i]->has_meas_mcs_down = 1;
+        ue_info_list[i]->meas_mcs_down = rand()%32;
 
         // properties
         ue_info_list[i]->has_prop_1 = 0;
@@ -330,6 +334,11 @@ void ran_read(RANParameter ran_par_enum, RANParamMapEntry* map_entry){
         case RAN_PARAMETER__UE_LIST:
             map_entry->value_case=RAN_PARAM_MAP_ENTRY__VALUE_UE_LIST;
             map_entry->ue_list = build_ue_list_message();
+            break;
+        case RAN_PARAMETER__GNB_PRB:
+            map_entry->value_case=RAN_PARAM_MAP_ENTRY__VALUE_INT64_VALUE;
+            gnb_prb = 50 + rand()%50;
+            map_entry->int64_value = gnb_prb;
             break;
         default:
             printf("Unrecognized param %d\n",ran_par_enum);
